@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Mde.CurrencyConverter.Pages.MainPage">
+
+    <StackLayout Padding="0,50,0,0">
+        <ListView ItemsSource="{ Binding Rates }">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <StackLayout Orientation="Horizontal">
+                            <Label HorizontalOptions="StartAndExpand"
+                                   Text="{ Binding Symbol }" />
+                            <Button HorizontalOptions="End" 
+                                    Text="->" />
+                        </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <Button Text="Convert To BTC"
+                Command="{ Binding GotoConvert }"></Button>
+    </StackLayout>
+
+</ContentPage>

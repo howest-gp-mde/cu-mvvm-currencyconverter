@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Mde.CurrencyConverter.Pages.ConvertPage">
+    <ContentPage.Content>
+        <StackLayout Padding="0,30,0,0">
+            <Entry Text="{ Binding Input }"
+                   VerticalOptions="Start" />
+            <Button Text="Convert!"
+                   Command="{ Binding Convert }"
+                   VerticalOptions="Start"></Button>
+            <Label Text="{ Binding Output }"
+                   VerticalOptions="Start" />
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
