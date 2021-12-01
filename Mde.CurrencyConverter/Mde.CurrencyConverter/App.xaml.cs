@@ -15,7 +15,9 @@ namespace Mde.CurrencyConverter
 
             FreshIOC.Container.Register<IRateService,RateService>().AsMultiInstance();
 
-            MainPage = FreshPageModelResolver.ResolvePageModel<MainViewModel>();
+            MainPage = new FreshNavigationContainer(
+                FreshPageModelResolver.ResolvePageModel<MainViewModel>());
+
         }
 
         protected override void OnStart()

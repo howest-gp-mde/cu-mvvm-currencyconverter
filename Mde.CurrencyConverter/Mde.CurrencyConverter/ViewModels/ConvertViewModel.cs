@@ -1,4 +1,6 @@
 ﻿using FreshMvvm;
+using Mde.CurrencyConverter.Domain;
+using Mde.CurrencyConverter.Domain.Services;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,10 +11,60 @@ namespace Mde.CurrencyConverter.ViewModels
 {
     public class ConvertViewModel : FreshBasePageModel
     {
-        public ConvertViewModel()
+        protected readonly IRateService rateService;
+        protected CurrencyRate currencyRate;
+        protected string symbol;
+
+        public ConvertViewModel(IRateService rateService)
         {
-            Input = 66M;
+            this.rateService = rateService;
         }
+
+        //public async override void Init(object initData)
+        //{
+        //    base.Init(initData);
+        //}
+
+        protected override void ViewIsAppearing(object sender, EventArgs e)
+        {
+            Input = 100M;
+
+            base.ViewIsAppearing(sender, e);
+        }
+
+
+        private string baseCurrency;
+        public string BaseCurrency
+        {
+            get { return baseCurrency; }
+            set {
+                baseCurrency = value; 
+                RaisePropertyChanged(); 
+            }
+        }
+
+        private string quoteCurrency;
+        public string QuoteCurrency
+        {
+            get { return quoteCurrency; }
+            set { 
+                quoteCurrency = value; 
+                RaisePropertyChanged(); 
+            }
+        }
+
+
+        private string title;
+
+        public string Title
+        {
+            get { return title; }
+            set { 
+                title = value;
+                RaisePropertyChanged();
+            }
+        }
+
 
         private decimal input;
         public decimal Input
@@ -34,20 +86,23 @@ namespace Mde.CurrencyConverter.ViewModels
             }
         }
 
+        public ICommand Refresh => new Command<string>(async (symbol) =>
+        {
+            currencyRate = await rateService.GetCurrencyRate(symbol);
+
+            Title = $"Convert {currencyRate.BaseCurrency} to {currencyRate.QuoteCurrency}";
+            QuoteCurrency = currencyRate.QuoteCurrency;
+            BaseCurrency = currencyRate.BaseCurrency;
+
+        });
 
         public ICommand Convert => new Command(() => 
         {
             
-            Output = Input / 50847.12M;
+            Output = Input / currencyRate.Rate;
 
         });
 
         
-        protected override void ViewIsAppearing(object sender, EventArgs e)
-        {
-            Input = 100M;
-
-            base.ViewIsAppearing(sender, e);
-        }
     }
 }

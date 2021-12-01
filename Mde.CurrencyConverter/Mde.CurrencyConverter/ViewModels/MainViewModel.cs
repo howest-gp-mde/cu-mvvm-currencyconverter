@@ -3,6 +3,8 @@ using Mde.CurrencyConverter.Domain;
 using Mde.CurrencyConverter.Domain.Services;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
 using System.Windows.Input;
 using Xamarin.Forms;
@@ -18,15 +20,15 @@ namespace Mde.CurrencyConverter.ViewModels
             this.rateService = rateService;
         }
 
-        public override void Init(object initData)
+        public async override void Init(object initData)
         {
             base.Init(initData);
 
-            Rates = rateService.GetRates();
+            Rates = new ObservableCollection<CurrencyRate>(await rateService.GetRates());
         }
 
-        private IEnumerable<CurrencyRate> rates;
-        public IEnumerable<CurrencyRate> Rates
+        private ObservableCollection<CurrencyRate> rates;
+        public ObservableCollection<CurrencyRate> Rates
         {
             get { return rates; }
             set { 
@@ -35,12 +37,27 @@ namespace Mde.CurrencyConverter.ViewModels
             }
         }
 
-
-        public ICommand GotoConvert => new Command(ExecuteGotoConvert);
-
-        private async void ExecuteGotoConvert()
+        public ICommand ReadCrypto => new Command(async () =>
         {
-            await CoreMethods.PushPageModel<ConvertViewModel>();
+           //read crypto and add to list!!
+            var newRates = await rateService.DiscoverNewRates();
+            foreach(var newRate in newRates)
+            {
+                Rates.Add(newRate);
+            }
+        });
+
+        public ICommand GotoConvert => new Command<string>(ExecuteGotoConvert);
+
+        private async void ExecuteGotoConvert(string symbol)
+        {
+            await CoreMethods.PushPageModel<ConvertViewModel>(
+                (viewModel) =>
+                {
+                    viewModel.Refresh.Execute(symbol);
+                }
+            );
         }
+
     }
 }

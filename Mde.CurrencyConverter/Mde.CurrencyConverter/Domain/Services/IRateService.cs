@@ -1,9 +1,14 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Mde.CurrencyConverter.Domain.Services
 {
     public interface IRateService
     {
-        IEnumerable<CurrencyRate> GetRates();
+        Task<IEnumerable<CurrencyRate>> GetRates();
+
+        Task<CurrencyRate> GetCurrencyRate(string symbol);
+
+        Task<IEnumerable<CurrencyRate>> DiscoverNewRates();
     }
 }
